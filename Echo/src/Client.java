@@ -5,8 +5,8 @@
  */
 
 /**
- *
- * @author Karin
+ * IST 411 SP18
+ * @author Team 03
  */
 import java.io.BufferedReader;
 import java.io.IOException;
