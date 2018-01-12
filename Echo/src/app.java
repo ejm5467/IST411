@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- *
- * @author Emily
+ * IST 411 SP18
+ * @author Team 03
+ * Lesson 01: Group Work - Create a simple client/server echo application
  */
 public class app {
 
