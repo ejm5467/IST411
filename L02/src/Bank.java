@@ -1,6 +1,6 @@
 
-import java.util.*;
-import java.util.concurrent.locks.*;
+import java.util.Arrays;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,50 +14,34 @@ import java.util.concurrent.locks.*;
  */
 public class Bank {
     
-    private final double[] accounts;
-    private Lock bankLock;
-    private Condition sufficientFunds;
+    double[] accounts;
     
     public Bank(int n, double initialBalance){
         accounts = new double[n];
-        Arrays.fill(accounts, initialBalance);
-        bankLock = new ReentrantLock();
-        sufficientFunds = bankLock.newCondition();
+        Arrays.fill(accounts, initialBalance);      
     }
     
-    public void transfer(int from, int to, double amount) throws InterruptedException
+    public void deposit(int accountNumber, double amount) 
     {
-        bankLock.lock();
-        try {
-            while (accounts[from] < amount)
-                sufficientFunds.await();
-            System.out.print(Thread.currentThread());
-            accounts[from] -= amount;
-            System.out.printf(" %10.2f from %d to %d", amount, from, to);
-            accounts[to] += amount;
-            System.out.printf(" Total Balance: %10.2f%n", getTotalBalance());
-            sufficientFunds.signalAll();
-        }
-        finally {
-            bankLock.unlock();
-        }
+        Runnable r = () -> {
+        accounts[accountNumber] += amount;
+        System.out.println(Thread.currentThread() + "Deposit of " + amount + " into account " + accountNumber + " successful.");
+        System.out.println("Balance of account " + accountNumber + ": " + accounts[accountNumber]);
+        };
+        Thread t = new Thread(r);
+        t.start();
     }
     
-    public double getTotalBalance(){
-        
-        bankLock.lock();
-        try {
-            double sum = 0;
-            for (double a : accounts)
-                sum += a;
-            return sum;
-        }
-        finally {
-            bankLock.unlock();
-        }
-    }
-    
-    public int size(){
-        return accounts.length;
+    public void transfer(int from, int to, double amount)
+    {
+        Runnable r = () -> {
+        System.out.println(Thread.currentThread() + "Transfering " + amount + " from account " + from + " to account " + to + ".");
+        accounts[from] -= amount;
+        accounts[to] += amount;
+        System.out.println("Balance of account " + from + ": " + accounts[from]);
+        System.out.println("Balance of account " + to + ": " + accounts[to]);
+        };
+        Thread t = new Thread(r);
+        t.start();
     }
 }
